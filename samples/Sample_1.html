@@ -1,0 +1,537 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN"
+"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">
+<html>
+<body>
+	
+	
+
+<canvas id="canvas_1" width="160" height="100" style=""></canvas>
+<canvas id="canvas_2" width="160" height="100" style=""></canvas>
+<canvas id="canvas_3" width="160" height="100" style=""></canvas>
+
+<script>
+
+/**
+ * A class to parse color values
+ * @author Stoyan Stefanov <sstoo@gmail.com>
+ * @link   http://www.phpied.com/rgb-color-parser-in-javascript/
+ * @license Use it if you like it
+ */
+function RGBColor(color_string)
+{
+    this.ok = false;
+
+    // strip any leading #
+    if (color_string.charAt(0) == '#') { // remove # if any
+        color_string = color_string.substr(1,6);
+    }
+
+    color_string = color_string.replace(/ /g,'');
+    color_string = color_string.toLowerCase();
+
+    // before getting into regexps, try simple matches
+    // and overwrite the input
+    var simple_colors = {
+        aliceblue: 'f0f8ff',
+        antiquewhite: 'faebd7',
+        aqua: '00ffff',
+        aquamarine: '7fffd4',
+        azure: 'f0ffff',
+        beige: 'f5f5dc',
+        bisque: 'ffe4c4',
+        black: '000000',
+        blanchedalmond: 'ffebcd',
+        blue: '0000ff',
+        blueviolet: '8a2be2',
+        brown: 'a52a2a',
+        burlywood: 'deb887',
+        cadetblue: '5f9ea0',
+        chartreuse: '7fff00',
+        chocolate: 'd2691e',
+        coral: 'ff7f50',
+        cornflowerblue: '6495ed',
+        cornsilk: 'fff8dc',
+        crimson: 'dc143c',
+        cyan: '00ffff',
+        darkblue: '00008b',
+        darkcyan: '008b8b',
+        darkgoldenrod: 'b8860b',
+        darkgray: 'a9a9a9',
+        darkgreen: '006400',
+        darkkhaki: 'bdb76b',
+        darkmagenta: '8b008b',
+        darkolivegreen: '556b2f',
+        darkorange: 'ff8c00',
+        darkorchid: '9932cc',
+        darkred: '8b0000',
+        darksalmon: 'e9967a',
+        darkseagreen: '8fbc8f',
+        darkslateblue: '483d8b',
+        darkslategray: '2f4f4f',
+        darkturquoise: '00ced1',
+        darkviolet: '9400d3',
+        deeppink: 'ff1493',
+        deepskyblue: '00bfff',
+        dimgray: '696969',
+        dodgerblue: '1e90ff',
+        feldspar: 'd19275',
+        firebrick: 'b22222',
+        floralwhite: 'fffaf0',
+        forestgreen: '228b22',
+        fuchsia: 'ff00ff',
+        gainsboro: 'dcdcdc',
+        ghostwhite: 'f8f8ff',
+        gold: 'ffd700',
+        goldenrod: 'daa520',
+        gray: '808080',
+        green: '008000',
+        greenyellow: 'adff2f',
+        honeydew: 'f0fff0',
+        hotpink: 'ff69b4',
+        indianred : 'cd5c5c',
+        indigo : '4b0082',
+        ivory: 'fffff0',
+        khaki: 'f0e68c',
+        lavender: 'e6e6fa',
+        lavenderblush: 'fff0f5',
+        lawngreen: '7cfc00',
+        lemonchiffon: 'fffacd',
+        lightblue: 'add8e6',
+        lightcoral: 'f08080',
+        lightcyan: 'e0ffff',
+        lightgoldenrodyellow: 'fafad2',
+        lightgrey: 'd3d3d3',
+        lightgreen: '90ee90',
+        lightpink: 'ffb6c1',
+        lightsalmon: 'ffa07a',
+        lightseagreen: '20b2aa',
+        lightskyblue: '87cefa',
+        lightslateblue: '8470ff',
+        lightslategray: '778899',
+        lightsteelblue: 'b0c4de',
+        lightyellow: 'ffffe0',
+        lime: '00ff00',
+        limegreen: '32cd32',
+        linen: 'faf0e6',
+        magenta: 'ff00ff',
+        maroon: '800000',
+        mediumaquamarine: '66cdaa',
+        mediumblue: '0000cd',
+        mediumorchid: 'ba55d3',
+        mediumpurple: '9370d8',
+        mediumseagreen: '3cb371',
+        mediumslateblue: '7b68ee',
+        mediumspringgreen: '00fa9a',
+        mediumturquoise: '48d1cc',
+        mediumvioletred: 'c71585',
+        midnightblue: '191970',
+        mintcream: 'f5fffa',
+        mistyrose: 'ffe4e1',
+        moccasin: 'ffe4b5',
+        navajowhite: 'ffdead',
+        navy: '000080',
+        oldlace: 'fdf5e6',
+        olive: '808000',
+        olivedrab: '6b8e23',
+        orange: 'ffa500',
+        orangered: 'ff4500',
+        orchid: 'da70d6',
+        palegoldenrod: 'eee8aa',
+        palegreen: '98fb98',
+        paleturquoise: 'afeeee',
+        palevioletred: 'd87093',
+        papayawhip: 'ffefd5',
+        peachpuff: 'ffdab9',
+        peru: 'cd853f',
+        pink: 'ffc0cb',
+        plum: 'dda0dd',
+        powderblue: 'b0e0e6',
+        purple: '800080',
+        red: 'ff0000',
+        rosybrown: 'bc8f8f',
+        royalblue: '4169e1',
+        saddlebrown: '8b4513',
+        salmon: 'fa8072',
+        sandybrown: 'f4a460',
+        seagreen: '2e8b57',
+        seashell: 'fff5ee',
+        sienna: 'a0522d',
+        silver: 'c0c0c0',
+        skyblue: '87ceeb',
+        slateblue: '6a5acd',
+        slategray: '708090',
+        snow: 'fffafa',
+        springgreen: '00ff7f',
+        steelblue: '4682b4',
+        tan: 'd2b48c',
+        teal: '008080',
+        thistle: 'd8bfd8',
+        tomato: 'ff6347',
+        turquoise: '40e0d0',
+        violet: 'ee82ee',
+        violetred: 'd02090',
+        wheat: 'f5deb3',
+        white: 'ffffff',
+        whitesmoke: 'f5f5f5',
+        yellow: 'ffff00',
+        yellowgreen: '9acd32'
+    };
+    for (var key in simple_colors) {
+        if (color_string == key) {
+            color_string = simple_colors[key];
+        }
+    }
+    // emd of simple type-in colors
+
+    // array of color definition objects
+    var color_defs = [
+        {
+            re: /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/,
+            example: ['rgb(123, 234, 45)', 'rgb(255,234,245)'],
+            process: function (bits){
+                return [
+                    parseInt(bits[1]),
+                    parseInt(bits[2]),
+                    parseInt(bits[3])
+                ];
+            }
+        },
+        {
+            re: /^(\w{2})(\w{2})(\w{2})$/,
+            example: ['#00ff00', '336699'],
+            process: function (bits){
+                return [
+                    parseInt(bits[1], 16),
+                    parseInt(bits[2], 16),
+                    parseInt(bits[3], 16)
+                ];
+            }
+        },
+        {
+            re: /^(\w{1})(\w{1})(\w{1})$/,
+            example: ['#fb0', 'f0f'],
+            process: function (bits){
+                return [
+                    parseInt(bits[1] + bits[1], 16),
+                    parseInt(bits[2] + bits[2], 16),
+                    parseInt(bits[3] + bits[3], 16)
+                ];
+            }
+        }
+    ];
+
+    // search through the definitions to find a match
+    for (var i = 0; i < color_defs.length; i++) {
+        var re = color_defs[i].re;
+        var processor = color_defs[i].process;
+        var bits = re.exec(color_string);
+        if (bits) {
+            channels = processor(bits);
+            this.r = channels[0];
+            this.g = channels[1];
+            this.b = channels[2];
+            this.ok = true;
+        }
+
+    }
+
+    // validate/cleanup values
+    this.r = (this.r < 0 || isNaN(this.r)) ? 0 : ((this.r > 255) ? 255 : this.r);
+    this.g = (this.g < 0 || isNaN(this.g)) ? 0 : ((this.g > 255) ? 255 : this.g);
+    this.b = (this.b < 0 || isNaN(this.b)) ? 0 : ((this.b > 255) ? 255 : this.b);
+
+    // some getters
+    this.toRGB = function () {
+        return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')';
+    }
+    this.toHex = function () {
+        var r = this.r.toString(16);
+        var g = this.g.toString(16);
+        var b = this.b.toString(16);
+        if (r.length == 1) r = '0' + r;
+        if (g.length == 1) g = '0' + g;
+        if (b.length == 1) b = '0' + b;
+        return '#' + r + g + b;
+    }
+
+    // help
+    this.getHelpXML = function () {
+
+        var examples = new Array();
+        // add regexps
+        for (var i = 0; i < color_defs.length; i++) {
+            var example = color_defs[i].example;
+            for (var j = 0; j < example.length; j++) {
+                examples[examples.length] = example[j];
+            }
+        }
+        // add type-in colors
+        for (var sc in simple_colors) {
+            examples[examples.length] = sc;
+        }
+
+        var xml = document.createElement('ul');
+        xml.setAttribute('id', 'rgbcolor-examples');
+        for (var i = 0; i < examples.length; i++) {
+            try {
+                var list_item = document.createElement('li');
+                var list_color = new RGBColor(examples[i]);
+                var example_div = document.createElement('div');
+                example_div.style.cssText =
+                        'margin: 3px; '
+                        + 'border: 1px solid black; '
+                        + 'background:' + list_color.toHex() + '; '
+                        + 'color:' + list_color.toHex()
+                ;
+                example_div.appendChild(document.createTextNode('test'));
+                var list_item_value = document.createTextNode(
+                    ' ' + examples[i] + ' -> ' + list_color.toRGB() + ' -> ' + list_color.toHex()
+                );
+                list_item.appendChild(example_div);
+                list_item.appendChild(list_item_value);
+                xml.appendChild(list_item);
+
+            } catch(e){}
+        }
+        return xml;
+
+    }
+
+}
+
+var lerp = function(a,b,u) {
+    return (1-u) * a + u * b;
+};
+
+
+function Animate(){};
+
+//Classe utilitária para fazer a animação controlando o tempo.
+//Autor: Gustavo Amigo
+Animate.antimateTo = function(fn, delay,endValue) {
+
+	var start = new Date().getTime(),
+		handle = new Object();
+		
+	function loop() {
+		var current = new Date().getTime(),
+			delta = current - start;
+			
+		if(delta <= delay) {
+			var currentValue = delta/delay*endValue
+			fn(currentValue);
+			handle.value = window.requestAnimFrame(loop);
+		} else {
+			fn(endValue);
+		}
+ 
+ 	};
+	
+	handle.value = window.requestAnimFrame(loop);
+	return handle;
+}
+ 
+/**
+ * Behaves the same as clearInterval except uses cancelRequestAnimationFrame() where possible for better performance
+ * @param {int|object} fn The callback function
+ */
+Animate.clearAnimation = function(handle) {
+    window.cancelAnimationFrame ? window.cancelAnimationFrame(handle.value) :
+    window.webkitCancelAnimationFrame ? window.webkitCancelAnimationFrame(handle.value) :
+    window.webkitCancelRequestAnimationFrame ? window.webkitCancelRequestAnimationFrame(handle.value) : /* Support for legacy API */
+    window.mozCancelRequestAnimationFrame ? window.mozCancelRequestAnimationFrame(handle.value) :
+    window.oCancelRequestAnimationFrame	? window.oCancelRequestAnimationFrame(handle.value) :
+    window.msCancelRequestAnimationFrame ? window.msCancelRequestAnimationFrame(handle.value) :
+    clearInterval(handle);
+};
+
+//Classe que desenha um Gauge Simples
+//Autor: Gustavo Amigo
+function CanvasGauge(elementId, x, y, r1, r2) {
+	var that = this;
+	this.elementId = elementId;
+	this.x = x;
+	this.y = y;
+	this.r1 = r1;
+	this.r2 = r2;
+	this.frontColor = "#FF0000";
+	this.backgroundColor = "#EEEEEE";
+	this.indicatorLabel = "average";
+	this.indicatorFont = "normal normal bold 25px arial";
+	this.element = document.getElementById(elementId);
+	this.context = this.element.getContext("2d");
+	this.indicator = 0;
+	
+	var _showOnce = true;
+	
+	this.show = function(indicator) {
+		this.indicator = indicator;
+		
+		// Alguns elementos são rederizado apenas uma vez;
+		if(_showOnce) {
+			_drawArcEdgeLabel();
+			_showOnce = false;
+		}
+		_eraseBackground();
+		_drawMiddleIndicatorLabel();
+		_drawArcIndicator();
+		_drawArcShaddow();
+	}
+	
+	this.animateTo = function(delay, indicator) {
+		var i = indicator;
+		var start = {r:128, g:  128, b:128};  
+		endColorRGB = new RGBColor(that.frontColor);
+		var end = {r:endColorRGB.r, g: endColorRGB.g, b:endColorRGB.b};  
+		Animate.antimateTo(function(x) { 
+			var u = x / i;
+			var r = parseInt(lerp(start.r, end.r, u));
+		    var g = parseInt(lerp(start.g, end.g, u));
+			var b = parseInt(lerp(start.b, end.b, u));
+			var colorname = 'rgb('+r+','+g+','+b+')';
+			that.frontColor = colorname;
+			that.show(x);
+		}, delay, i);		
+		
+	}
+	
+
+	
+	var _drawArcEdgeLabel = function() {
+		var ctx = that.context;
+		ctx.font="normal normal normal 11px arial";
+		ctx.fillStyle="#b3b3b3";
+	
+		ctx.fillText("0",x-(r2+r1)/2-ctx.measureText("0").width/2,y + 15);
+		ctx.fillText("100",x+(r2+r1)/2-ctx.measureText("100").width/2,y + 15);
+		ctx.fillText(that.indicatorLabel ,x-ctx.measureText(that.indicatorLabel ).width/2,y + 15);
+	}
+	
+	var _drawMiddleIndicatorLabel = function() {
+		var ctx = that.context;
+		ctx.font = that.indicatorFont;
+		ctx.fillStyle = "black";
+		var txt = "" + Math.floor(that.indicator);
+		ctx.fillText(txt,x-ctx.measureText(txt).width/2 ,y);
+	}
+	var _eraseBackground = function() {
+		var ctx = that.context;
+		ctx.fillStyle="white";
+		ctx.fillRect(x-r2-2,y+2,r2*2+4,-r2*2-4);
+	}
+	
+	var _drawArcIndicator = function(){
+		var ctx = that.context;
+
+		//Desenha o primeiro arco;
+        ctx.beginPath();
+        ctx.fillStyle=that.frontColor;
+        ctx.strokeStyle=that.frontColor;
+        var arcAngle = (1+that.indicator/100)*Math.PI;
+        var startAngle = 1*Math.PI;
+        ctx.arc(x,y,r1,startAngle, arcAngle);
+        ctx.arc(x,y,r2,arcAngle,startAngle, true);
+        ctx.arc(x,y,r1,startAngle,startAngle);
+        ctx.fill();
+        ctx.stroke();
+                
+        // Desenha o segunda arco;
+		if(that.indicator != 100) {
+	        ctx.beginPath();
+	        ctx.fillStyle=that.backgroundColor;
+	        ctx.strokeStyle=that.backgroundColor;
+	        var arcAngle = (1+that.indicator/100)*Math.PI;
+	        var endAngle = 2*Math.PI;
+	        ctx.arc(x,y,r1,endAngle, arcAngle, true);
+	        ctx.arc(x,y,r2,arcAngle,endAngle);
+	        ctx.arc(x,y,r1,endAngle,endAngle, true);
+	        ctx.fill();
+	        ctx.stroke();	
+		}
+	
+	}
+		
+	var _drawArcShaddow = function() {
+		var ctx = that.context;
+		var grd=ctx.createRadialGradient(x,y,r1,x,y,r2);
+		grd.addColorStop(0,"rgba(0,0,0,0.09)");
+		grd.addColorStop(0.4,"rgba(255,255,255,0)");
+		grd.addColorStop(0.6,"rgba(255,255,255,0)");
+		grd.addColorStop(1,"rgba(0,0,0,0.09)");
+
+        ctx.beginPath();
+        ctx.fillStyle=grd;
+        ctx.strokeStyle="rgba(0,0,0,0.09)";
+        var arcAngle = 2*Math.PI;
+        var startAngle = 1*Math.PI;
+        ctx.arc(x,y,r1,startAngle, arcAngle);
+        ctx.arc(x,y,r2,arcAngle,startAngle, true);
+        ctx.arc(x,y,r1,startAngle,startAngle);
+        ctx.fill();
+        ctx.stroke();
+	}
+	
+}
+
+window.requestAnimFrame = (function(callback) {
+        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+        function(callback) {
+          window.setTimeout(callback, 1000 / 60);
+        };
+      })();
+
+
+
+
+
+
+var x = 0;
+var canvas_1 = new CanvasGauge("canvas_1", 80, 80, 50, 78);
+
+canvas_1.frontColor = "red";
+canvas_1.indicatorLabel = "Pedidos/h";
+canvas_1.animateTo(500, 80);
+
+
+/*
+Animate.antimateTo(function(x) { 
+	
+	canvas_1.show(x);
+}, 1000, 100);
+*/
+
+var canvas_2 = new CanvasGauge("canvas_2", 80, 80, 50, 78);
+canvas_2.frontColor = "#00bb00";
+canvas_2.animateTo(500, 30);
+
+
+
+
+/*
+start = {r:128, g:  128, b:128};  
+end   = {r:0, g:200, b:0};  
+
+Animate.antimateTo(function(x) { 
+	var u = x / 60;
+	var r = parseInt(lerp(start.r, end.r, u));
+    var g = parseInt(lerp(start.g, end.g, u));
+	var b = parseInt(lerp(start.b, end.b, u));
+	var colorname = 'rgb('+r+','+g+','+b+')';
+	canvas_2.frontColor = colorname;
+	canvas_2.show(x);
+}, 1000, 60);
+
+*/
+
+var canvas_3 = new CanvasGauge("canvas_3", 80, 80, 25, 38);
+canvas_3.frontColor = "#ee0";
+canvas_3.indicatorLabel = "";
+canvas_3.indicatorFont = "normal normal bold 15px arial"
+canvas_3.animateTo(500, 40);
+
+
+</script> 
+
+
+</body>
+</html>
